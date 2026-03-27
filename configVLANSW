@@ -1,0 +1,48 @@
+from netmiko import ConnectHandler
+
+sw1={
+    'device_type': 'cisco_nxos',
+    'host':'10.10.20.40',
+    'username':'admin',
+    'password':'RG!_Yw200'
+    }
+con2= ConnectHandler(**sw1)
+
+
+
+comS=[
+    'vlan 10',
+    'name RED1',
+
+    'vlan 20',
+    'name RED2',
+    'exit',
+
+    'interface Eth1/10',
+    'switchport mode access',
+    'switchport access vlan 10',
+    'no shut',
+    'exit',
+
+    'interface Eth1/20',
+    'switchport mode access',
+    'switchport access vlan 20',
+    'no shut',
+    'exit',
+
+    'interface Eth1/2',
+    'switchport mode trunk',
+    'switchport trunk allowed vlan 10,20',
+    'exit'
+]
+
+
+print('Configuracio para switch en progreso')
+out= con2.send_config_set(comS)
+print(out)
+print('Conf finalizada del switch')
+print(con2.send_command('show vlan brief'))
+print(con2.send_command('show running-config'))
+
+
+con2.disconnect()
